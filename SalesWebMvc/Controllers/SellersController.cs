@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using SalesWebMvc.Models;
 using SalesWebMvc.Services;
 namespace SalesWebMvc.Controllers
 {
@@ -10,15 +11,25 @@ namespace SalesWebMvc.Controllers
     {
         private readonly SellerService _sellerService;
 
-    public SellersController(SellerService sellerService)
-    {
-        _sellerService = sellerService;
-    }
-
-    public IActionResult Index()
+        public SellersController(SellerService sellerService)
         {
-        var list = _sellerService.FindAll();
-        return View(list);
+            _sellerService = sellerService;
         }
+
+        public IActionResult Index()
+        {
+            var list = _sellerService.FindAll();
+            return View(list);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(Seller seller)
+        {
+            _sellerService.Insert(seller);
+            return RedirectToAction(nameof(Index));
+        }
+
+
     }
 }
